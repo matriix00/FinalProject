@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+         app: myapp
+    spec:
+      containers:
+      - name: myapp-cont
+        image: magdy79/simple-app:12
+        ports:
+        - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: myapp-svc
+spec:
+  selector:
+     app: myapp
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 80
+

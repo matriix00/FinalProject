@@ -1,0 +1,88 @@
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: pvc-demo
+#   namespace: jenkins-namespace
+# spec:
+#   accessModes:
+#     - ReadWriteOnce
+#   resources:
+#     requests:
+#       storage: 30Gi
+#   storageClassName: standard
+
+# ---
+# apiVersion: storage.k8s.io/v1
+# kind: StorageClass
+# metadata:
+#   name: standard
+# provisioner: kubernetes.io/aws-ebs
+# parameters:
+#   type: gp2
+# reclaimPolicy: Retain
+# allowVolumeExpansion: true
+# mountOptions:
+#   - debug
+# volumeBindingMode: Immediate
+#########################################################################
+# kind: StorageClass
+# apiVersion: storage.k8s.io/v1
+# metadata:
+#   name: local-storage
+# provisioner: kubernetes.io/no-provisioner
+# volumeBindingMode: WaitForFirstConsumer
+# ---
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+#   name: jenkins-pv-volume
+#   namespace: jenkins-namespace
+#   labels:
+#     type: local
+# spec:
+#   storageClassName: local-storage
+#   claimRef:
+#     name: pvc-demo
+#     namespace: jenkins-namespace
+#   capacity:
+#     storage: 10Gi
+#   accessModes:
+#     - ReadWriteOnce
+#   local:
+#     path: /mnt
+# ---
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: pvc-demo
+#   namespace: jenkins-namespace
+# spec:
+#   storageClassName: local-storage
+#   accessModes:
+#     - ReadWriteOnce
+#   resources:
+#     requests:
+#       storage: 3Gi
+
+
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata: 
+  name: ebs-sc
+  namespace: jenkins-namespace
+provisioner: ebs.csi.aws.com
+volumeBindingMode: WaitForFirstConsumer 
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ebs-pv-claim
+  namespace: jenkins-namespace
+spec: 
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ebs-sc
+  resources: 
+    requests:
+      storage: 20Gi
+

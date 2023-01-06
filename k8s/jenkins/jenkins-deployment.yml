@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jenkins-deployment
+  namespace: jenkins-namespace
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jenkins-app
+  template:
+    metadata:
+      labels:
+        app: jenkins-app
+    spec:
+      containers:
+        - name: jenkins-app
+          image: docker.io/magdy79/jenkins
+          securityContext:
+            allowPrivilegeEscalation: true
+            privileged: true
+            readOnlyRootFilesystem: false
+            runAsUser: 0
+          ports:
+            - name: http-port
+              containerPort: 8080
+            - name: jnlpport
+              containerPort: 50000
+          volumeMounts:
+            - name: dockersock
+              mountPath: /var/run/docker.sock
+            #if u want to use same machine without creating storage class
+            # - name: jenkins-data
+            #   mountPath: /var/jenkins_home
+            - name: jenkins-persistent-storage
+              mountPath: /var/jenkins_home 
+      volumes:
+        - name: dockersock
+          hostPath:
+            path: /var/run/docker.sock
+        # if u want to use sme machine 
+        # - name: jenkins-data
+        #   emptyDir: {}
+        - name: jenkins-persistent-storage
+          persistentVolumeClaim:
+            claimName: ebs-pv-claim
+
