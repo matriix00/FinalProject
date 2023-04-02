@@ -7,7 +7,6 @@ resource "aws_subnet" "management_subnet" {
     Name = "management-subnet"
   }
 }
-
 resource "aws_subnet" "restricted_subnet" {
   
   vpc_id = aws_vpc.your_vpc.id

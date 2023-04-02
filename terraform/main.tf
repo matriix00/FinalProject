@@ -10,15 +10,15 @@ module "network" {
 
 }
 
-module "aws_amplify" {
-  source = "/home/dev97/Desktop/finalproject/terraform/aws_amplify"
+# module "aws_amplify" {
+#   source = "/home/dev97/Desktop/finalproject/terraform/aws_amplify"
   
-}
-
-# module "eks" {
-#   source = "/home/dev97/Desktop/finalproject/terraform/eks"
-#   subnet_ids = [module.network.management_subnet,module.network.restricted_subnet]
 # }
+
+module "eks" {
+  source = "/home/dev97/Desktop/finalproject/terraform/eks"
+  subnet_ids = [module.network.management_subnet,module.network.restricted_subnet]
+}
 
 # module "alb" {
 #   source = "/home/dev97/Desktop/finalproject/terraform/alb"

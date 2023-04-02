@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "backend_bucket" {
-  bucket        = "cloudservices-final-terraform-state"
+  bucket        = "cloudservices-test-terraform-state"
 }
 resource "aws_s3_bucket_acl" "tfstate" {
   bucket = aws_s3_bucket.backend_bucket.id
